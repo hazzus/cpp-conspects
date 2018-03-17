@@ -1,0 +1,148 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C++ 17 march</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h1 id="наследование-и-виртуальные-функции">Наследование и виртуальные функции</h1>
+<pre class=" language-c"><code class="prism ++ language-c"><span class="token keyword">struct</span> base <span class="token punctuation">{</span>
+	<span class="token keyword">int</span> a<span class="token punctuation">,</span> b<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">struct</span> derived <span class="token punctuation">:</span> base <span class="token punctuation">{</span>
+	<span class="token keyword">int</span> c<span class="token punctuation">,</span> d<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><code>Derived</code> содержит и а, и с, и b, и d.<br>
+Компилятор ищет методы и поля внутри последнего, наследовавшего класса. Поэтому обращение к одинаковым полям класса будет возвращать поле последнего.<br>
+Если поля классов совпадают в названии, то существует два способа обратиться к объекту базового типа.<br>
+1.<br>
+2.  <code>class::field</code><br>
+<code>тут должен быть дохуища код большой, но я его на доске не вижу</code><br>
+Невыгодно делать один класс полем другого класса, потому что тогда мы не сможем по ссылке на внутренний экземпляр мы не сможем получить внешний.<br>
+Для наследования есть методы <code>offsetof</code> и <code>containerof</code><br>
+Пример некорректного обращения к памяти:</p>
+<pre class=" language-c"><code class="prism ++ language-c"><span class="token keyword">void</span> <span class="token function">f</span><span class="token punctuation">(</span>base <span class="token operator">&amp;</span>z<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	derived<span class="token operator">&amp;</span> dz <span class="token operator">=</span> <span class="token punctuation">(</span>derived<span class="token operator">&amp;</span><span class="token punctuation">)</span>z<span class="token punctuation">;</span>
+	std<span class="token punctuation">:</span><span class="token punctuation">:</span>cout <span class="token operator">&lt;&lt;</span> dz<span class="token punctuation">.</span>c <span class="token operator">&lt;&lt;</span> <span class="token string">' '</span> <span class="token operator">&lt;&lt;</span> dz<span class="token punctuation">.</span>d <span class="token operator">&lt;&lt;</span> std<span class="token punctuation">:</span><span class="token punctuation">:</span>endl<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	base x <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+	base y <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+	<span class="token function">f</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// сосач, выдаст область после</span>
+	<span class="token function">f</span><span class="token punctuation">(</span>y<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// выдаст 1 2</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><span class="katex--inline"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>N</mi><mi>B</mi></mrow><annotation encoding="application/x-tex">NB</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.68333em;"></span><span class="strut bottom" style="height: 0.68333em; vertical-align: 0em;"></span><span class="base"><span class="mord mathit" style="margin-right: 0.10903em;">N</span><span class="mord mathit" style="margin-right: 0.05017em;">B</span></span></span></span></span>: Наследующий класс можно кастить к любому наследуемому классу.<br>
+С методами в наследовании работают точно так же как и с полями:</p>
+<pre class=" language-c"><code class="prism ++ language-c"><span class="token keyword">struct</span> base <span class="token punctuation">{</span>
+	<span class="token keyword">void</span> <span class="token function">f</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">void</span> <span class="token function">g</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">struct</span> derived <span class="token punctuation">:</span> base <span class="token punctuation">{</span>
+	<span class="token keyword">void</span> <span class="token function">g</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">void</span> <span class="token function">h</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	base b<span class="token punctuation">;</span>
+	b<span class="token punctuation">.</span><span class="token function">f</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	b<span class="token punctuation">.</span><span class="token function">g</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	derived d<span class="token punctuation">;</span>
+	d<span class="token punctuation">.</span><span class="token function">f</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	d<span class="token punctuation">.</span><span class="token function">g</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// запустит g() из derived</span>
+	d<span class="token punctuation">.</span><span class="token function">h</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	d<span class="token punctuation">.</span>base<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">g</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// запустит g() из base</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Функции можно пометить кодовым словом <code>virtual</code><br>
+Что же оно делает? В случае с <code>virtual</code> вызывается функция которая нашлась бы внутри не статического типа, а динамического© Ваня</p>
+<pre class=" language-c"><code class="prism ++ language-c">		<span class="token keyword">struct</span> base<span class="token punctuation">{</span>
+			virtual <span class="token keyword">void</span> <span class="token function">g</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token punctuation">}</span><span class="token punctuation">;</span>
+		<span class="token keyword">struct</span> <span class="token function">derived</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+		<span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+			derived d<span class="token punctuation">;</span>
+			base<span class="token operator">&amp;</span> db <span class="token operator">=</span> d<span class="token punctuation">;</span>
+			db<span class="token punctuation">.</span><span class="token function">g</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment">// запускается derived g()</span>
+		<span class="token punctuation">}</span>
+</code></pre>
+<p>Практически полезный и простой пример:<br>
+Пусть мы делаем муз.проигрыватель. Мы можем брать данные из потока, постепенно передавая ему. Допустим мы читаем из файла(источник данных)</p>
+<pre class=" language-c"><code class="prism ++ language-c"><span class="token keyword">struct</span> data_source <span class="token punctuation">{</span>
+	virtual <span class="token keyword">void</span> <span class="token function">read</span><span class="token punctuation">(</span>buffer<span class="token operator">&amp;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">struct</span> local_file <span class="token punctuation">:</span> data_source <span class="token punctuation">{</span>
+	<span class="token keyword">void</span> <span class="token function">read</span><span class="token punctuation">(</span>buffer<span class="token operator">&amp;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">struct</span> http_connection <span class="token punctuation">:</span> data_source <span class="token punctuation">{</span>
+	<span class="token keyword">void</span> <span class="token function">read</span><span class="token punctuation">(</span>buffer<span class="token operator">&amp;</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">void</span> <span class="token function">play</span><span class="token punctuation">(</span>data_source<span class="token operator">&amp;</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	local_file <span class="token function">ld</span><span class="token punctuation">(</span><span class="token string">"1.flac"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">play</span><span class="token punctuation">(</span>lf<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	http_connection <span class="token function">hc</span><span class="token punctuation">(</span><span class="token string">"http://..."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">play</span><span class="token punctuation">(</span>hc<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Эта конструкция называется (не понял)<br>
+Теперь улучшим наш пример:</p>
+<pre class=" language-c"><code class="prism ++ language-c"><span class="token keyword">struct</span> data_source <span class="token punctuation">{</span>
+	virtual <span class="token keyword">void</span> <span class="token function">read</span><span class="token punctuation">(</span>buffer<span class="token operator">&amp;</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> <span class="token comment">//не имеет тела</span>
+	virtual <span class="token operator">~</span><span class="token function">data_source</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">struct</span> <span class="token function">local_file</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">struct</span> <span class="token function">http_connetction</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">struct</span> player <span class="token punctuation">{</span>
+	<span class="token function">player</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		current_source <span class="token operator">=</span> nullptr<span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+	<span class="token operator">~</span><span class="token function">player</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		delete current_source<span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+	<span class="token function">player</span><span class="token punctuation">(</span>player <span class="token keyword">const</span><span class="token operator">&amp;</span><span class="token punctuation">)</span> <span class="token operator">=</span> delete<span class="token punctuation">;</span>
+	player<span class="token operator">&amp;</span> operator<span class="token operator">=</span><span class="token punctuation">(</span>player <span class="token keyword">const</span><span class="token operator">&amp;</span><span class="token punctuation">)</span> <span class="token operator">=</span> delete<span class="token punctuation">;</span>
+	
+	<span class="token keyword">void</span> play <span class="token function">file</span><span class="token punctuation">(</span>std<span class="token punctuation">:</span><span class="token punctuation">:</span>string <span class="token keyword">const</span><span class="token operator">&amp;</span> str<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token function">stop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		delete current_source<span class="token punctuation">;</span>
+		current_source <span class="token operator">=</span> new <span class="token function">local_file</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>str<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">}</span>
+	data_source<span class="token operator">*</span> current_source<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Если нет разумной реализации по умолчанию, то ее помечают как нереализованную(абстрактную) с помощью = 0.<br>
+Так же существует еще один модификатор доступа <code>protected</code> - к этим методам и полям могут обращаться только производные класса.<br>
+Сначала <code>potected</code> казался целесообразным. Но потом оказалось что ничего хорошего это не приносит.<br>
+Внутри своего класса мы не ломаем инвариант. То что может сломать - делаем <code>private</code>.  С <code>protected</code> возникает некоторая дилемма насчет инварианта.</p>
+<h2 id="множественное-наследование">Множественное наследование</h2>
+<p>Да, в крестах оно есть.</p>
+<pre class=" language-c"><code class="prism ++ language-c"><span class="token keyword">struct</span> base1 <span class="token punctuation">{</span><span class="token keyword">int</span> a<span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">struct</span> base2 <span class="token punctuation">{</span><span class="token keyword">int</span> a<span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">struct</span> base3 <span class="token punctuation">:</span> base1<span class="token punctuation">,</span> base2<span class="token punctuation">{</span><span class="token keyword">int</span> d<span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	base3 z<span class="token punctuation">;</span>
+	z<span class="token punctuation">.</span>base2<span class="token punctuation">:</span><span class="token punctuation">:</span>a <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token comment">//возьмет поле base2</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>есть еще такое :</p>
+<pre class=" language-c"><code class="prism ++ language-c"><span class="token keyword">struct</span> base3 <span class="token punctuation">:</span> base1 <span class="token punctuation">{</span><span class="token keyword">int</span> d<span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token keyword">struct</span> base4 <span class="token punctuation">:</span> base2<span class="token punctuation">,</span> base3 <span class="token punctuation">{</span><span class="token keyword">int</span> y<span class="token punctuation">;</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
+<p>(пропуск)<br>
+На второй паре туго было слушать, кинут консп - я заполню</p>
+<blockquote>
+<p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p>
+</blockquote>
+</div>
+</body>
+
+</html>
