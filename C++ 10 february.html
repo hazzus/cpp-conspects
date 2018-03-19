@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C++ 10 february</title>
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>
+
+<body class="stackedit">
+  <div class="stackedit__html"><h1 id="введение-в-ассемблер">Введение в ассемблер</h1>
+<p>На примере <code>x86</code></p>
+<div class="mermaid"><svg xmlns="http://www.w3.org/2000/svg" id="mermaid-svg-ypECrj64nB6Gwmex" height="100%" viewBox="0 0 267.5625 132" style="max-width:267.5625px;"><g><g class="output"><g class="clusters"></g><g class="edgePaths"><g class="edgePath" style="opacity: 1;"><path class="path" d="M72.078125,48.111648487343075L121.9609375,33L171.84375,47.75781328509697" marker-end="url(#arrowhead672)" style="fill:none"></path><defs><marker id="arrowhead672" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowheadPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g><g class="edgePath" style="opacity: 1;"><path class="path" d="M171.84375,64.24218671490303L121.9609375,79L72.078125,63.888351512656925" marker-end="url(#arrowhead673)" style="fill:none"></path><defs><marker id="arrowhead673" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="strokeWidth" markerWidth="8" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowheadPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker></defs></g></g><g class="edgeLabels"><g class="edgeLabel" style="opacity: 1;" transform="translate(121.9609375,33)"><g transform="translate(-24.8828125,-13)" class="label"><foreignObject width="49.765625" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"><span class="edgeLabel">WRITE</span></div></foreignObject></g></g><g class="edgeLabel" style="opacity: 1;" transform="translate(121.9609375,79)"><g transform="translate(-21.1328125,-13)" class="label"><foreignObject width="42.265625" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;"><span class="edgeLabel">READ</span></div></foreignObject></g></g></g><g class="nodes"><g class="node" style="opacity: 1;" id="A" transform="translate(46.0390625,56)"><rect rx="0" ry="0" x="-26.0390625" y="-23" width="52.078125" height="46"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-16.0390625,-13)"><foreignObject width="32.078125" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">CPU</div></foreignObject></g></g></g><g class="node" style="opacity: 1;" id="B" transform="translate(199.703125,56)"><rect rx="0" ry="0" x="-27.859375" y="-23" width="55.71875" height="46"></rect><g class="label" transform="translate(0,0)"><g transform="translate(-17.859375,-13)"><foreignObject width="35.71875" height="26"><div xmlns="http://www.w3.org/1999/xhtml" style="display: inline-block; white-space: nowrap;">RAM</div></foreignObject></g></g></g></g></g></g></svg></div>
+<p>Регистр IP содержит адрес команды.<br>
+Команды: языка ассемблера<br>
+Регистры:<br>
+16 битные (8 штук) - AX, CX, DX, BX, SP, BP, SI, DI</p>
+<h3 id="команда-mov">Команда MOV</h3>
+<pre class=" language-nasm"><code class="prism  language-nasm">B8 <span class="token number">05</span> <span class="token number">00</span>		MOV			dst, src		<span class="token comment">; dst = src</span>
+B9 0A <span class="token number">00</span>		MOV			<span class="token register variable">AX</span>, <span class="token number">5</span>			<span class="token comment">; AX = 5</span>
+</code></pre>
+<p><code>MOV</code> может двигать содержимое памяти по адресу:</p>
+<pre class=" language-nasm"><code class="prism  language-nasm">	MOV		<span class="token register variable">AX</span>, <span class="token operator">[</span><span class="token number">10</span><span class="token operator">]</span> <span class="token comment">; переместить в регистр из памяти по адресу 10</span>
+	MOV		<span class="token register variable">AX</span>, <span class="token operator">[</span><span class="token register variable">BX</span><span class="token operator">]</span> <span class="token comment">; переместить в регистр из п-ти по адресу в BX</span>
+	MOV		<span class="token operator">[</span><span class="token register variable">BX</span><span class="token operator">]</span>, <span class="token register variable">AX</span> <span class="token comment">; переместить в память по адресу BX сод. AX</span>
+	MOV		<span class="token operator">[</span><span class="token register variable">BX</span><span class="token operator">]</span>, <span class="token operator">[</span><span class="token register variable">AX</span><span class="token operator">]</span> <span class="token comment">; WRONG! из памяти в память нельзя</span>
+</code></pre>
+<h3 id="команды-арифметики">Команды арифметики</h3>
+<pre class=" language-nasm"><code class="prism  language-nasm">	ADD		<span class="token register variable">AX</span>, <span class="token register variable">CX</span> <span class="token comment">; AX = AX + CX</span>
+	SUB		<span class="token register variable">AX</span>, <span class="token register variable">CX</span> <span class="token comment">; AX = AX - CX</span>
+	AND
+	OR
+	XOR
+	INC		<span class="token register variable">AX</span> <span class="token comment">; AX += 1</span>
+	DEC		<span class="token register variable">AX</span> <span class="token comment">; AX -= 1</span>
+	<span class="token comment">;(INC и DEC с адресом тоже работают)</span>
+	NEG 	<span class="token register variable">AX</span> <span class="token comment">; AX = -AX</span>
+	NOT 	<span class="token register variable">AX</span> <span class="token comment">; AX = ~AX(побитово)</span>
+</code></pre>
+<h4 id="g--o2--s--masmintel-s.cpp----посмотреть-ассемблированный-код-с-оптимизацией">g++ -O2 -S -masm=intel s.cpp – посмотреть ассемблированный код с оптимизацией</h4>
+<pre class=" language-nasm"><code class="prism  language-nasm">	<span class="token comment">; MUL и DIV - унарные опрации</span>
+	MUL 	<span class="token register variable">BX</span> <span class="token comment">; DX:AX = AX * BX, где AX - младшие 16 бит, DX - старшие</span>
+	DIV 	<span class="token register variable">BX</span> <span class="token comment">; AX = DX:AX / BX, логика такая же</span>
+	<span class="token comment">; IMUL и IDIV - знаковые умножение и деление</span>
+</code></pre>
+<p>При этом в команде <code>DIV</code> если частное не помещается в <code>AX</code>, то это такая же ошибка, как деление на 0</p>
+<h2 id="команды-перехода-jmp-и-прочие">Команды перехода <code>JMP</code> и прочие</h2>
+<pre class=" language-nasm"><code class="prism  language-nasm"><span class="token label function">.loop:</span> <span class="token comment">; метка</span>
+	INC <span class="token register variable">AX</span>
+	JMP loop
+</code></pre>
+<p><code>JMP</code> позволяет сделать бесконечный цикл<br>
+Основные условные переходы:</p>
+<pre class=" language-nasm"><code class="prism  language-nasm">	cmp		<span class="token register variable">ax</span>, <span class="token register variable">bx</span> <span class="token comment">; сравнить меняет регистр флага</span>
+	je, jne <span class="token operator">-</span> jump if (not) equal
+	jg, jng <span class="token operator">-</span> jump if (not) greater (signed)
+	jl, jnl <span class="token operator">-</span> jump if (not) less (signed)
+	ja, jna <span class="token operator">-</span> jump if (not) above (unsigned)
+	jb, jnb <span class="token operator">-</span> jump if (not) below (unsigned)
+</code></pre>
+<h2 id="регистры-флагов--flags-registers">Регистры флагов ( FLAGS Registers)</h2>
+<p>Выставляются после инструкций (<code>CMP</code>, арифметика и пр.)</p>
+<pre class=" language-nasm"><code class="prism  language-nasm">	CF <span class="token operator">-</span> carry flag		<span class="token comment">; если рез. с битом переноса (для unsigned)</span>
+	ZF <span class="token operator">-</span> zero flag 		<span class="token comment">; если рез. 0</span>
+	SF <span class="token operator">-</span> sign flag 		<span class="token comment">; если рез. отрицательный</span>
+	OF <span class="token operator">-</span> overflow flag 	<span class="token comment">; если рез переполнился (для signed)</span>
+</code></pre>
+<p>Отсюда другие <strong>команды перехода</strong>:</p>
+<pre class=" language-nasm"><code class="prism  language-nasm">	jc, jnc <span class="token operator">-</span> jump if (not) carry flag
+	jz, jnz <span class="token operator">-</span> jump if (not) zero flag
+	js, jns <span class="token operator">-</span> jump if (not) sign flag
+	jo, jno <span class="token operator">-</span> jump if (not) overflow flag
+</code></pre>
+<p><img src="https://lh3.googleusercontent.com/bprNmlPi91w1iuOJJYyde39lFgHqC8h8eDBBSr2tNhwTSxECxaI-mLjAln7iCnmBg_xemAXQt0Dh" alt="Схема флагов"><br>
+Многие команды расставляют флаги, выполняя операцию<br>
+<code>cmp</code> - сделай вычитание, но не записывай результат<br>
+<code>test</code> - побитовый &amp;</p>
+<p>Пример программы с метками и прыжками:</p>
+<pre class=" language-nasm"><code class="prism  language-nasm"><span class="token label function">.loop:</span>
+		mov			<span class="token register variable">dx</span>, <span class="token register variable">ax</span>
+		add			<span class="token register variable">ax</span>, <span class="token register variable">bx</span>
+		mov			<span class="token register variable">bx</span>, <span class="token register variable">dx</span>
+		dec 		<span class="token register variable">cx</span>
+		jnz			loop
+</code></pre>
+<h3 id="битные-регистры">32 битные регистры</h3>
+<p><code>EAX, и другие обычные с приставкой E - extended</code><br>
+<img src="https://lh3.googleusercontent.com/1K_32oiZwZIL6fC1UX2UW5jXbtj0ClVSLSIiOJuXitkf3mvVw9MvNhK2wjdXvmVbJUG-m3vyuUwz" alt="enter image description here"></p>
+<h2 id="команды-сдвигов">Команды сдвигов</h2>
+<pre class=" language-nasm"><code class="prism  language-nasm">	shl <span class="token operator">-</span> влево любой знак
+	shr <span class="token operator">-</span> вправо беззнаково (бит знака теряется)
+	sar <span class="token operator">-</span> вправо знаково (сохранение знака)
+</code></pre>
+<h2 id="оптимизация-и-другие-приколы">Оптимизация и другие приколы</h2>
+<p>Команды деления (<code>DIV</code> и другие) работают медленно, поэтому компилятор  их обычно заменяет, например:<br>
+a / 1 -&gt; None<br>
+a / 2 -&gt; сдвиг<br>
+a / 3 -&gt; <span class="katex--inline"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mfrac><mrow><mi>a</mi><mfrac><mrow><msup><mn>2</mn><mi>N</mi></msup></mrow><mrow><mn>3</mn></mrow></mfrac></mrow><mrow><msup><mn>2</mn><mi>N</mi></msup></mrow></mfrac></mrow><annotation encoding="application/x-tex">\frac{a\frac{2^{N}}{3}}{2^{N}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 1.36326em;"></span><span class="strut bottom" style="height: 1.71513em; vertical-align: -0.351865em;"></span><span class="base"><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 1.36326em;"><span class="" style="top: -2.64813em;"><span class="pstrut" style="height: 3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 0.774093em;"><span class="" style="top: -2.786em; margin-right: 0.0714286em;"><span class="pstrut" style="height: 2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathit mtight" style="margin-right: 0.10903em;">N</span></span></span></span></span></span></span></span></span></span></span></span><span class="" style="top: -3.23em;"><span class="pstrut" style="height: 3em;"></span><span class="frac-line hide-tail" style="height: 0.04em;"><svg width="400em" height="400em" viewBox="0 0 400000 400000" preserveAspectRatio="xMinYMin slice"><path d="M0 0 h400000 v400000 h-400000z M0 0 h400000 v400000 h-400000z"></path></svg></span></span><span class="" style="top: -3.5508em;"><span class="pstrut" style="height: 3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathit mtight">a</span><span class="mord mtight"><span class="mopen nulldelimiter sizing reset-size3 size6"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 1.16066em;"><span class="" style="top: -2.656em;"><span class="pstrut" style="height: 3em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathrm mtight">3</span></span></span></span><span class="" style="top: -3.2255em;"><span class="pstrut" style="height: 3em;"></span><span class="frac-line hide-tail mtight" style="height: 0.049em;"><svg width="400em" height="400em" viewBox="0 0 400000 400000" preserveAspectRatio="xMinYMin slice"><path d="M0 0 h400000 v400000 h-400000z M0 0 h400000 v400000 h-400000z"></path></svg></span></span><span class="" style="top: -3.384em;"><span class="pstrut" style="height: 3em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height: 1.08733em;"><span class="" style="top: -3.08733em; margin-right: 0.1em;"><span class="pstrut" style="height: 2.68333em;"></span><span class="mord mtight"><span class="mord mathit mtight" style="margin-right: 0.10903em;">N</span></span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.344em;"></span></span></span></span><span class="mclose nulldelimiter sizing reset-size3 size6"></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.351865em;"></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<h2 id="команда-lea">Команда <code>LEA</code></h2>
+<pre class=" language-nasm"><code class="prism  language-nasm">	lea <span class="token register variable">ax</span>, <span class="token operator">[</span><span class="token register variable">bx</span><span class="token operator">]</span> <span class="token comment">; в [] не только регистр</span>
+</code></pre>
+<p><code>LEA</code> похожа на команду чтения из памяти, но в [] можно складывать. И вообще <code>LEA</code> перемещает указатель на данные, а <code>MOV</code> сами данные.<br>
+Так же <code>LEA</code> похожа на <code>ADD</code></p>
+<pre class=" language-nasm"><code class="prism  language-nasm">	lea 	<span class="token register variable">ax</span>, <span class="token operator">[</span><span class="token register variable">ax</span> <span class="token operator">+</span> <span class="token number">8</span><span class="token operator">]</span>
+	add		<span class="token register variable">ax</span>, <span class="token number">8</span>
+</code></pre>
+<p>Эти две строки делают одно и тоже, только выполняются на разных блоках конвейера, а еще <code>lea</code> не трогает флаги, в отличие от <code>add</code>.</p>
+<h2 id="вызов-функций-и-выход-из-них">Вызов функций и выход из них</h2>
+<p>Заходить и выходить из функций только в порядке стека<br>
+Есть специальный регистр <code>sp</code> который указывает на вершину стека.</p>
+<pre class=" language-nasm"><code class="prism  language-nasm">	push		<span class="token register variable">eax</span>
+	pop			<span class="token register variable">eax</span>
+</code></pre>
+<p>Команды работы со стеком. Стек позволяет сохранять старые значения, которые необходимо вернуть</p>
+<pre class=" language-nasm"><code class="prism  language-nasm">	call 		label <span class="token comment">; вызов ф-иии</span>
+	ret 			  <span class="token comment">; выход из ф-ии</span>
+	<span class="token comment">; по своей сути эти строки равносильны:</span>
+	push		ip <span class="token operator">+</span> <span class="token number">1</span>	<span class="token comment">;(address of next instruction)</span>
+	jmp			label
+	...
+	pop			tmp
+	jmp			tmp
+</code></pre>
+<blockquote>
+<p>Written with <a href="https://stackedit.io/">StackEdit</a>.</p>
+</blockquote>
+</div>
+</body>
+
+</html>
