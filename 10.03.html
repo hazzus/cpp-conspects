@@ -6,7 +6,103 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>С++ 10 march</title>
   <link rel="stylesheet" href="https://stackedit.io/style.css" />
+</head>•<!DOCTYPE html>
+2
+<html>
+3
+​
+4
+<head>
+5
+  <meta charset="utf-8">
+6
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+7
+  <title>С++ 10 march</title>
+8
+  <link rel="stylesheet" href="https://stackedit.io/style.css" />
+9
 </head>
+10
+​
+11
+<body class="stackedit">
+12
+  <div class="stackedit__html"><h1 id="с.">С++.</h1>
+13
+<p>С - плохо читаемый язык, и больше программы на нем было очень сложно разобрать. Но он был очень быстрым и это послужило началом разработки языка С++.</p>
+14
+<h2 id="инкапсуляция">Инкапсуляция</h2>
+15
+<p>Для поддержки процесса данных в плюсах есть 2 механизма:<br>
+16
+[<code>(*p).data == p-&gt;data</code>]</p>
+17
+<pre class=" language-c"><code class="prism ++ language-c"><span class="token keyword">struct</span> string 
+18
+<span class="token punctuation">{</span>
+19
+        <span class="token keyword">void</span> <span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+20
+        <span class="token punctuation">{</span>        
+21
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>data<span class="token punctuation">)</span>
+22
+                        <span class="token function">free</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+23
+                data <span class="token operator">=</span> nullptr<span class="token punctuation">;</span>
+24
+                size <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+25
+        <span class="token punctuation">}</span>
+26
+private<span class="token punctuation">:</span>
+27
+        <span class="token keyword">char</span> <span class="token operator">*</span> data<span class="token punctuation">;</span>
+28
+        size_t size<span class="token punctuation">;</span>
+29
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+30
+</code></pre>
+31
+<p>Инвариант класса - условие выполняющееся на всех этапах существования класса.<br>
+32
+Хорошее условие:</p>
+33
+<blockquote>
+34
+<p>Все переменные, от которых зависит инвариант класса должны быть <code>private</code></p>
+35
+</blockquote>
+36
+<p>Но иногда может понадобиться модификатор private и для других переменных:</p>
+37
+<pre class=" language-c"><code class="prism ++ language-c"><span class="token keyword">struct</span> complex 
+38
+<span class="token punctuation">{</span>
+39
+        <span class="token keyword">float</span> re<span class="token punctuation">;</span>
+40
+        <span class="token keyword">float</span> im<span class="token punctuation">;</span>
+41
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+42
+</code></pre>
+43
+<p>Полярные координаты в комплексных числах, а мы хотим иметь возможность менять КС и переходить между ними.<br>
+44
+В стандартной библиотеке класс <code>complex</code> имеет <code>private</code> переменные.</p>
+45
+<h2 id="ключевые-слова-class-и-struct">Ключевые слова class и struct</h2>
+46
+<p>Они отличаются только тем, что в <code>struct</code> все по умолчанию <code>public</code>, а в <code>class</code> - <code>private</code></p>
+47
+<h2 id="конструкторы-и-деструкторы">Конструкторы и деструкторы</h2>
+48
+<p>Нам важно что при создании класса его инфариант мог бы быть выполненным. Для этого нужны конструкторы:</p>
+49
+<pre class=" language-c"><code class="prism ++ language-c">     <span class="token function">string</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 
 <body class="stackedit">
   <div class="stackedit__html"><h1 id="с.">С++.</h1>
